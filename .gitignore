@@ -6,3 +6,6 @@ venv/
 
 # JSON files
 *.json
+
+# PNG files
+*.png
