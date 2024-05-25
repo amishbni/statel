@@ -3,3 +3,6 @@ venv/
 
 # JetBrains' .idea directory
 .idea/
+
+# JSON files
+*.json
