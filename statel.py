@@ -2,6 +2,7 @@ import argparse
 import json
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import pandas as pd
 
 from collections import defaultdict
 from datetime import datetime
@@ -22,25 +23,30 @@ def parse_arguments():
 
 def statel(arguments: argparse.Namespace):
     message_count: dict = defaultdict(int)
-    user_name: str = ""
+    user_name: str
     with open(arguments.chat, "r") as file:
         data = json.loads(file.read())
         user_name = data["name"]
         for message in data["messages"]:
-            date: str = datetime.strptime(message["date"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+            date = datetime.strptime(message["date"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m")
             message_count[date] += 1
 
     dates, counts = zip(*message_count.items())
+    df: pd.DataFrame = pd.DataFrame({
+        "dates": dates,
+        "counts": counts,
+    })
+    df["dates"] = pd.to_datetime(df["dates"])
     plt.figure(figsize=(10, 6))
-    plt.plot(dates, counts, marker="o", linestyle="-")
+    plt.plot(df["dates"], df["counts"], marker="o", linestyle="-")
 
-    plt.title("Message frequency per day", fontname=FONT_NAME)
+    plt.title(f"Message Frequency with {user_name}", fontname=FONT_NAME)
     plt.xlabel("Date", fontname=FONT_NAME)
     plt.xticks(fontname=FONT_NAME)
     plt.ylabel("Message Count", fontname=FONT_NAME)
     plt.yticks(fontname=FONT_NAME)
 
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
     plt.gca().xaxis.set_major_locator(plt.MaxNLocator(10))
 
     plt.tight_layout()
