@@ -7,6 +7,9 @@ from collections import defaultdict
 from datetime import datetime
 
 
+FONT_NAME = "JetBrainsMono Nerd Font Mono"
+
+
 def parse_arguments():
     parser: argparse.ArgumentParser = argparse.ArgumentParser(description="Statistics for Telegram")
     parser.add_argument(
@@ -30,11 +33,16 @@ def statel(arguments: argparse.Namespace):
     dates, counts = zip(*message_count.items())
     plt.figure(figsize=(10, 6))
     plt.plot(dates, counts, marker="o", linestyle="-")
-    plt.title("Message frequency per day")
-    plt.xlabel("Date")
-    plt.ylabel("Message Count")
+
+    plt.title("Message frequency per day", fontname=FONT_NAME)
+    plt.xlabel("Date", fontname=FONT_NAME)
+    plt.xticks(fontname=FONT_NAME)
+    plt.ylabel("Message Count", fontname=FONT_NAME)
+    plt.yticks(fontname=FONT_NAME)
+
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
     plt.gca().xaxis.set_major_locator(plt.MaxNLocator(10))
+
     plt.tight_layout()
     plt.savefig(f"{user_name}.png", dpi=300, bbox_inches="tight")
 
